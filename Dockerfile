@@ -14,16 +14,16 @@ pip3 install paho-mqtt urllib3
 ENV MQTT_HOST
 
 #Mqtt broker port - 1883 is the common
-ENV MQTT_PORT=1883
+ENV MQTT_PORT 1883
 
 #Mqtt broker username
-ENV MQTT_USER
+ENV MQTT_USER user
 
 #Mqtt broker password
-ENV MQTT_PASS
+ENV MQTT_PASS password
 
 #Debug Mode for testing
-ENV DEBUG_MODE = "False"
+ENV DEBUG_MODE = false
 
 RUN mkdir /opt/redalert
 
