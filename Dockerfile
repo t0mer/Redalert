@@ -21,3 +21,12 @@ ENV MQTT_USER
 
 #Mqtt broker password
 ENV MQTT_PASS
+
+#Debug Mode for testing
+ENV DEBUG_MODE = "False"
+
+RUN mkdir /opt/redalert
+
+RUN wget https://raw.githubusercontent.com/t0mer/Redalert/master/redalert.py -O /opt/redalert/redalert.py
+
+ENTRYPOINT ["/usr/bin/python3", "/opt/redalert/redalert.py"]
