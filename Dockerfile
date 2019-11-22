@@ -3,9 +3,9 @@ FROM ubuntu:18.04
 LABEL maintainer="tomer.klein@gmail.com"
 
 #install pip3
-RUN apt update && apt upgrade --yes
+RUN apt update
 
-RUN apt install python3-pip --yes
+RUN apt install python3-pip wget --yes
 
 #install python paho-mqtt client and urllib3
 RUN pip3 install paho-mqtt urllib3
