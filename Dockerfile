@@ -5,7 +5,7 @@ LABEL maintainer="tomer.klein@gmail.com"
 #install pip3
 RUN apt update && apt upgrade --yes
 
-RUN apt install python3-pip
+RUN apt install python3-pip --yes
 
 #install python paho-mqtt client and urllib3
 RUN pip3 install paho-mqtt urllib3
