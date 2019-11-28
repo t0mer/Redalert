@@ -1,11 +1,6 @@
-FROM ubuntu:18.04
+FROM python:3.6
 
 LABEL maintainer="tomer.klein@gmail.com"
-
-#install pip3
-RUN apt update
-
-RUN apt install python3-pip wget --yes
 
 #install python paho-mqtt client and urllib3
 RUN pip3 install paho-mqtt urllib3
@@ -27,6 +22,6 @@ ENV DEBUG_MODE "False"
 
 RUN mkdir /opt/redalert
 
-ADD wget https://github.com/t0mer/Redalert/raw/master/redalert.py -O /opt/redalert
+COPY redalert.py /opt/redalert
 
 ENTRYPOINT ["/usr/bin/python3", "/opt/redalert/redalert.py"]
