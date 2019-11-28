@@ -27,6 +27,6 @@ ENV DEBUG_MODE "False"
 
 RUN mkdir /opt/redalert
 
-COPY redalert.py -O /opt/redalert
+COPY redalert.py /opt/redalert
 
 ENTRYPOINT ["/usr/bin/python3", "/opt/redalert/redalert.py"]
