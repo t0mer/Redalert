@@ -5,6 +5,7 @@ import os
 
 #mqtt connection Params
 server = os.getenv('MQTT_HOST')
+#Default port is 1883
 port = int(os.getenv('MQTT_PORT'))
 user = os.getenv('MQTT_USER')
 passw = os.getenv('MQTT_PASS')
