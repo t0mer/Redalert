@@ -25,6 +25,7 @@ ENV MQTT_PASS "password"
 #Debug Mode for testing
 ENV DEBUG_MODE "False"
 
+#Create working directory
 RUN mkdir /opt/redalert
 
 COPY redalert.py /opt/redalert
