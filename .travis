@@ -1,0 +1,13 @@
+language: python
+python:
+  - 3.0
+
+services:
+  - docker
+
+install:
+  - docker build -t redalert .
+  - docker run -d -p 127.0.0.1:80:80 --name redalert redalert
+  
+script:
+  - docker ps | grep -q pyload
