@@ -31,9 +31,9 @@ RUN mkdir /opt/redalert
 COPY redalert.py /opt/redalert
 
 #Cleanup
-RUN apt remove python3-pip --yes && \
-    apt autoremove --yes && \
-    rm -rf /var/cache/*
+#RUN apt remove python3-pip --yes && \
+#    apt autoremove --yes && \
+#    rm -rf /var/cache/*
 
 
 ENTRYPOINT ["/usr/bin/python3", "/opt/redalert/redalert.py"]
