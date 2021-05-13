@@ -36,7 +36,7 @@ services:
     container_name: redalert
     restart: always
     environment:
-     - MQTT_HOST=[Broker Address]
+      - MQTT_HOST=[Broker Address]
       - MQTT_USER=[Broker Username]
       - MQTT_PASS=[Broker Password]
       - DEBUG_MODE=False
