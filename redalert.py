@@ -2,6 +2,7 @@ import threading
 import paho.mqtt.client as mqtt
 import urllib3
 import os
+from loguru import logger
 
 #mqtt connection Params
 server = os.getenv('MQTT_HOST')
@@ -10,6 +11,7 @@ port = int(os.getenv('MQTT_PORT'))
 user = os.getenv('MQTT_USER')
 passw = os.getenv('MQTT_PASS')
 debug = os.getenv('DEBUG_MODE')
+
 
 #Setting Request Headers
 http = urllib3.PoolManager()
@@ -22,8 +24,12 @@ if debug == 'True':
 #Setting up MqttClient
 client = mqtt.Client("redalert")
 client.username_pw_set(user,passw)
+logger.info('#########################')
+logger.info("Using Username: " + user)
+logger.info("Ussing Password: " + passw)
 client.connect(server)
-
+logger.info("Using Server: " + server)
+logger.info('#########################')
 
 def monitor():
   #start the timer
@@ -31,7 +37,11 @@ def monitor():
   #Check for Alerts
   r = http.request('GET',url,headers=_headers)
   #Check if data contains alert data
-  if r.data != b'': #if there as alert, publish it to HA using Mqtt
-     result=client.publish("/redalert/",r.data,qos=0,retain=False)
+  try:
+      if r.data != b'': #if there as alert, publish it to HA using Mqtt
+         result=client.publish("/redalert/",r.data,qos=0,retain=False)
+         logger.info(str(r.data)
+  except Exception as ex:
+      logger.error(str(e))
 
 monitor()
