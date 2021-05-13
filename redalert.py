@@ -40,7 +40,7 @@ def monitor():
   try:
       if r.data != b'': #if there as alert, publish it to HA using Mqtt
          result=client.publish("/redalert/",r.data,qos=0,retain=False)
-         logger.info(str(r.data)
+         logger.info(str(r.data))
   except Exception as ex:
          logger.error(str(ex))
 
