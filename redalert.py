@@ -1,8 +1,14 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import threading
 import paho.mqtt.client as mqtt
 import urllib3
 import os
 from loguru import logger
+import time
+
+os.environ['PYTHONIOENCODING'] = 'utf-8'
+os.environ['LANG'] = 'C.UTF-8'
 
 #mqtt connection Params
 server = os.getenv('MQTT_HOST')
@@ -11,6 +17,11 @@ port = int(os.getenv('MQTT_PORT'))
 user = os.getenv('MQTT_USER')
 passw = os.getenv('MQTT_PASS')
 debug = os.getenv('DEBUG_MODE')
+region = os.getenv('REGION')
+
+
+
+logger.info("Monitoring alert for :" + region)
 
 
 #Setting Request Headers
@@ -20,16 +31,48 @@ url= 'https://www.oref.org.il/WarningMessages/alert/alerts.json'
 if debug == 'True':
    url = 'https://techblog.co.il/alerts.json'
 
+#Check Connection Status
+def on_connect(client, userdata, flags, rc):
+    if rc==0:
+        client.connected_flag=True #set flag
+        logger.info("connected OK Returned code=" + str(rc))
+    else:
+       if rc==1:
+          logger.error("Connection refused – incorrect protocol version")
+       if rc==2:
+           logger.error("Connection refused – invalid client identifier")
+       if rc==3:
+           logger.error("Connection refused – server unavailable")
+       if rc==4:
+           logger.error("Connection refused – bad username or password")
+       if rc==5:
+           logger.error("Connection refused – not authorised")
+        
+def on_disconnect(client, userdata, rc):
+    logger.info("disconnecting reason  "  +str(rc))
+    client.connected_flag=False
+    client.disconnect_flag=True
 
 #Setting up MqttClient
 client = mqtt.Client("redalert")
+
+#Setting Credentials
 client.username_pw_set(user,passw)
-logger.info('#########################')
-logger.info("Using Username: " + user)
-logger.info("Ussing Password: " + passw)
+
+#Setting Callback
+client.on_connect=on_connect
+client.on_disconnect=on_disconnect
+#Connetcting
+client.loop_start()
+logger.info("Connecting to broker")
+mqtt.Client.connected_flag=False#create flag in class
 client.connect(server)
-logger.info("Using Server: " + server)
-logger.info('#########################')
+
+while not client.connected_flag: #wait in loop
+    logger.info("In wait loop")
+    time.sleep(1)
+logger.info("in Main Loop")
+client.loop_stop()    #Stop loop 
 
 def monitor():
   #start the timer
@@ -39,10 +82,16 @@ def monitor():
   #Check if data contains alert data
   try:
       if r.data != b'': #if there as alert, publish it to HA using Mqtt
-         result=client.publish("/redalert/",r.data,qos=0,retain=False)
-         logger.info(str(r.data))
+         if region in str(r.data) or region=="*":
+            result=client.publish("/redalert/",r.data,qos=0,retain=False)
+            client.publish("/redalert/alarm",'on',qos=0,retain=False)
+            logger.debug("Alaram detected")
+            
+      else:
+         client.publish("/redalert/alarm",'off',qos=0,retain=False)
+         result=client.publish("/redalert/",'',qos=0,retain=False)
   except Exception as ex:
          logger.error(str(ex))
 
-
-monitor()
+if __name__ == '__main__':
+   monitor()
