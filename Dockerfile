@@ -10,6 +10,10 @@ RUN apt install python3-pip --yes
 #install python paho-mqtt client and urllib3
 RUN pip3 install paho-mqtt urllib3 loguru
 
+ENV PYTHONIOENCODING=utf-8
+
+ENV LANG=C.UTF-8
+
 #Mqtt broker address (ip or fqdn)
 ENV MQTT_HOST "127.0.0.1"
 
@@ -24,6 +28,8 @@ ENV MQTT_PASS "password"
 
 #Debug Mode for testing
 ENV DEBUG_MODE "False"
+
+ENV REGION = "*"
 
 #Create working directory
 RUN mkdir /opt/redalert
