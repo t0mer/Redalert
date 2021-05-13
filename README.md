@@ -19,6 +19,8 @@ used for setting the MQTT Broker Username, default value is `user`.
 used for setting the MQTT Broker Password, default value is `password`.
 - *DEBUG_MODE*</br>
 used for setting the script to run in test mode wich will read json from test url.
+- *REGION*</br>
+used for setting the region for monitoring. default is * (any)
 
 ## Usage
 ### Run from hub
@@ -40,6 +42,7 @@ services:
       - MQTT_USER=[Broker Username]
       - MQTT_PASS=[Broker Password]
       - DEBUG_MODE=False
+      - REGION=[* for any or region name)
     restart: unless-stopped
 ```
 ### Adding Sensor in Home-Assistant
