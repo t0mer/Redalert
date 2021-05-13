@@ -42,6 +42,7 @@ def monitor():
          result=client.publish("/redalert/",r.data,qos=0,retain=False)
          logger.info(str(r.data)
   except Exception as ex:
-      logger.error(str(e))
+         logger.error(str(e))
+
 
 monitor()
