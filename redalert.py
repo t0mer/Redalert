@@ -54,6 +54,11 @@ def on_disconnect(client, userdata, rc):
     client.disconnect_flag=True
     client.connect(server)
 
+
+def on_log(client, userdata, level, buf):
+    logger.inf(buf)
+
+
 #Setting up MqttClient
 client = mqtt.Client("redalert")
 
@@ -63,11 +68,12 @@ client.username_pw_set(user,passw)
 #Setting Callback
 client.on_connect=on_connect
 client.on_disconnect=on_disconnect
+client.on_log=on_log # set client logging
 #Connetcting
 client.loop_start()
 logger.info("Connecting to broker")
 mqtt.Client.connected_flag=False#create flag in class
-client.connect(server)
+client.connect(server, keepalive=3600)
 
 while not client.connected_flag: #wait in loop
     logger.info("In wait loop")
