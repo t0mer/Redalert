@@ -6,7 +6,7 @@ import urllib3
 import os
 from loguru import logger
 import time
-
+import codecs
 os.environ['PYTHONIOENCODING'] = 'utf-8'
 os.environ['LANG'] = 'C.UTF-8'
 
@@ -19,7 +19,7 @@ passw = os.getenv('MQTT_PASS')
 debug = os.getenv('DEBUG_MODE')
 region = os.getenv('REGION')
 
-
+reader = codecs.getreader('utf-8')
 
 logger.info("Monitoring alert for :" + region)
 
@@ -79,10 +79,11 @@ def monitor():
   threading.Timer(1, monitor).start()
   #Check for Alerts
   r = http.request('GET',url,headers=_headers)
+  r.encoding = 'utf-8'
   #Check if data contains alert data
   try:
       if r.data != b'': #if there as alert, publish it to HA using Mqtt
-         if region in str(r.data) or region=="*":
+         if region in r.data.decode('utf-8') or region=="*":
             result=client.publish("/redalert/",r.data,qos=0,retain=False)
             client.publish("/redalert/alarm",'on',qos=0,retain=False)
             logger.debug("Alaram detected")
@@ -92,6 +93,7 @@ def monitor():
          result=client.publish("/redalert/",'',qos=0,retain=False)
   except Exception as ex:
          logger.error(str(ex))
-
+  finally:
+     r.release_conn()
 if __name__ == '__main__':
    monitor()
