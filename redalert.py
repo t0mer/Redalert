@@ -52,6 +52,7 @@ def on_disconnect(client, userdata, rc):
     logger.info("disconnecting reason  "  +str(rc))
     client.connected_flag=False
     client.disconnect_flag=True
+    client.connect(server)
 
 #Setting up MqttClient
 client = mqtt.Client("redalert")
@@ -86,7 +87,6 @@ def monitor():
          if region in r.data.decode('utf-8') or region=="*":
             result=client.publish("/redalert/",r.data,qos=0,retain=False)
             client.publish("/redalert/alarm",'on',qos=0,retain=False)
-            logger.debug("Alaram detected")
             
       else:
          client.publish("/redalert/alarm",'off',qos=0,retain=False)
