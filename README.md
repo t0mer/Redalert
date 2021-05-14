@@ -68,4 +68,12 @@ services:
     qos: 1
 ```
 
-
+#### Alaram state (Value will be on/off)
+```yaml
+  - platform: mqtt
+    name: "Red Alert"
+    state_topic: "/redalert/alarm"
+    icon: fas:broadcast-tower
+    value_template: "{{ value_json }}"
+    qos: 1
+```
