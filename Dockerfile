@@ -8,7 +8,7 @@ RUN apt update
 RUN apt install python3-pip --yes
 
 #install python paho-mqtt client and urllib3
-RUN pip3 install paho-mqtt urllib3 loguru
+RUN pip3 install paho-mqtt urllib3 loguru apprise
 
 ENV PYTHONIOENCODING=utf-8
 
