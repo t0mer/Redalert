@@ -31,6 +31,8 @@ ENV DEBUG_MODE "False"
 
 ENV REGION = "*"
 
+ENV APPRISE
+
 #Create working directory
 RUN mkdir /opt/redalert
 
