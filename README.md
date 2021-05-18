@@ -7,6 +7,23 @@ and publishes it over MQTT Protocol.
 ## Base Image
 `From ubuntu:18.04` described [here](https://hub.docker.com/_/ubuntu).
 
+
+## 18/05/2021 Major update
+Thanks to the amazing work of [@caronc](https://github.com/caronc) on the [apprise](https://github.com/caronc/apprise) 
+you can now send notification using variety of notification channels, like:
+* Telegram - [tgram://bottoken/ChatID](https://github.com/caronc/apprise/wiki/Notify_telegram)
+* Home-Assistant - [hassio://user@hostname/accesstoken](https://github.com/caronc/apprise/wiki/Notify_homeassistant)
+* IFTTT - [ifttt://{WebhookID}@{Event}/](https://github.com/caronc/apprise/wiki/Notify_ifttt)
+* Slack - [slack://TokenA/TokenB/TokenC/Channel](https://github.com/caronc/apprise/wiki/Notify_slack)
+* Microsoft Teams - [msteams://TokenA/TokenB/TokenC/](https://github.com/caronc/apprise/wiki/Notify_msteams)
+
+And much musch more. you can find it all on the project [Wiki](https://github.com/caronc/apprise/wiki).
+
+This update also contains:
+* Reducing the length of the data sends over the Mqtt prorocol, it is now contains regions only.
+* Added detaild log.
+* Fixed the bug that causing sendind multiple alerts.
+
 ## Image configuration
 ### Enviroment variables
 - *MQTT_HOST*</br>
@@ -21,12 +38,17 @@ used for setting the MQTT Broker Password, default value is `password`.
 used for setting the script to run in test mode wich will read json from test url.
 - *REGION*</br>
 used for setting the region for monitoring. default is * (any)
+- *NOTIFIERS*</br>
+use apprise notification. you can use multiple notifiers separated by space python for example: </br>
+```tgram://bottoken/ChatID hassio://user@hostname/accesstoken slack://TokenA/TokenB/TokenC/Channel```
+
+
 
 ## Usage
 ### Run from hub
 #### docker run from hub
 ```text
-docker run  -e MQTT_HOST="broker ip / fqdn" -e MQTT_PORT="1883" -e MQTT_USER="username" -e MQTT_PASS="password" -e DEBUG_MODE="False"  --name redalert techblog/redalert:latest
+docker run  -e MQTT_HOST="broker ip / fqdn" -e MQTT_PORT="1883" -e MQTT_USER="username" -e MQTT_PASS="password" -e DEBUG_MODE="False" -e REGION="*" --name redalert techblog/redalert:latest
 ```
 
 #### docker-compose from hub
@@ -43,6 +65,7 @@ services:
       - MQTT_PASS=[Broker Password]
       - DEBUG_MODE=False
       - REGION=[* for any or region name)
+      - NOTIFIERS=[Apprise notifiers]
     restart: unless-stopped
 ```
 ### Adding Sensor in Home-Assistant
