@@ -7,6 +7,9 @@ import os
 from loguru import logger
 import time
 import codecs
+import apprise
+import json
+
 os.environ['PYTHONIOENCODING'] = 'utf-8'
 os.environ['LANG'] = 'C.UTF-8'
 
@@ -18,10 +21,10 @@ user = os.getenv('MQTT_USER')
 passw = os.getenv('MQTT_PASS')
 debug = os.getenv('DEBUG_MODE')
 region = os.getenv('REGION')
+NOTIFIERS = os.getenv("NOTIFIERS")
+# reader = codecs.getreader('utf-8')
 
-reader = codecs.getreader('utf-8')
-
-logger.info("Monitoring alert for :" + region)
+logger.info("Monitoring alerts for :" + region)
 
 
 #Setting Request Headers
@@ -58,18 +61,17 @@ def on_disconnect(client, userdata, rc):
 def on_log(client, userdata, level, buf):
     logger.inf(buf)
 
+alerts = [0]
+
+# Setting apprise Job Manager
+apobj = apprise.Apprise()
 
 #Setting up MqttClient
 client = mqtt.Client("redalert")
-
-#Setting Credentials
 client.username_pw_set(user,passw)
-
-#Setting Callback
 client.on_connect=on_connect
 client.on_disconnect=on_disconnect
 client.on_log=on_log # set client logging
-#Connetcting
 client.loop_start()
 logger.info("Connecting to broker")
 mqtt.Client.connected_flag=False#create flag in class
@@ -81,6 +83,30 @@ while not client.connected_flag: #wait in loop
 logger.info("in Main Loop")
 client.loop_stop()    #Stop loop 
 
+
+if len(NOTIFIERS)!=0:
+    logger.info("Setting Apprise Alert")
+    jobs=NOTIFIERS.split()
+    for job in jobs:
+        logger.info("Adding: " + job)
+        apobj.add(job)
+
+def alarm_on(data):
+    client.publish("/redalert/data",str(data["data"]),qos=0,retain=False)
+    client.publish("/redalert",'on',qos=0,retain=False)
+    if len(NOTIFIERS)!=0:
+        logger.info("Alerting using Notifires")
+        apobj.notify(
+            body=str(data["data"]),
+            title=str(data["title"]),
+            )
+
+
+def alarm_off():
+    client.publish("/redalert/alarm",'off',qos=0,retain=False)
+    client.publish("/redalert","No active alerts",qos=0,retain=False)
+
+
 def monitor():
   #start the timer
   threading.Timer(1, monitor).start()
@@ -89,14 +115,16 @@ def monitor():
   r.encoding = 'utf-8'
   #Check if data contains alert data
   try:
-      if r.data != b'': #if there as alert, publish it to HA using Mqtt
-         if region in r.data.decode('utf-8') or region=="*":
-            result=client.publish("/redalert/",r.data,qos=0,retain=False)
-            client.publish("/redalert/alarm",'on',qos=0,retain=False)
-            
+      if r.data != b'':
+          alert = json.loads(r.data.decode('utf-8'))
+          if region in alert["data"] or region=="*":
+              if alert["id"] not in alerts:
+                  alerts.append(alert["id"])
+                  alarm_on(alert)
+                  logger.info(str(alert))
       else:
-         client.publish("/redalert/alarm",'off',qos=0,retain=False)
-         result=client.publish("/redalert/",'',qos=0,retain=False)
+         alarm_off()
+         
   except Exception as ex:
          logger.error(str(ex))
   finally:
