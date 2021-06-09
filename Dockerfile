@@ -5,10 +5,15 @@ LABEL maintainer="tomer.klein@gmail.com"
 #install pip3
 RUN apt update
 
-RUN apt install python3-pip --yes
+RUN apt install -yqq python3-pip
 
 #install python paho-mqtt client and urllib3
-RUN pip3 install paho-mqtt urllib3 loguru apprise
+RUN pip3 install --upgrade pip setuptools  --no-cache-dir && \
+    pip3 install paho-mqtt --no-cache-dir && \
+    pip3 install urllib3 --no-cache-dir && \
+    pip3 install loguru --no-cache-dir && \
+    pip3 install apprise --no-cache-dir
+
 
 ENV PYTHONIOENCODING=utf-8
 
