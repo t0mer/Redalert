@@ -1,9 +1,15 @@
 name: docker
 
 on:
-  push:
-    branches:
-      - 'master'
+on:
+  release:
+    types: [ published ]
+
+
+
+#  push:
+#    branches:
+#      - 'master'
 
 jobs:
   docker:
@@ -25,12 +31,25 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
+      
+      - name: Get current date
+        id: getDate
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+
+      - name: Get semantic version from file
+        id: getSemver
+        run: echo "::set-output name=semver::$(cat VERSION | tr -d ' \t\n\r' )"
+
         name: Build and push
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v2.6.1
         with:
           context: .
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: |
             techblog/redalert:latest
-            techblog/redalert:1.0.0
+            techblog/redalert:${{ steps.getSemver.outputs.semver }}
+          build-args: |
+            VCS_REF=${{ github.sha }}
+            BUILD_DATE=${{ steps.getDate.outputs.date }}
+            VERSION=${{ steps.getSemver.outputs.semver }}
