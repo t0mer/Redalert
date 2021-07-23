@@ -1,9 +1,9 @@
 name: docker_builde
 
 on:
-  push:
-    branches:
-      - 'master'
+  release:
+    types: [ published ]
+
 
 jobs:
   docker:
