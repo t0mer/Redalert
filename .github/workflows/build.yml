@@ -23,14 +23,6 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-#      - name: Get current date
-#        id: getDate
-#        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
-
-#      - name: Get semantic version from file
-#        id: getSemver
-#        run: echo "::set-output name=semver::$(cat VERSION | tr -d ' \t\n\r' )"
-
       - name: Build and push
         uses: docker/build-push-action@v2.6.1
         with:
