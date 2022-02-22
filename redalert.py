@@ -113,10 +113,11 @@ def monitor():
   #Check for Alerts
   r = http.request('GET',url,headers=_headers)
   r.encoding = 'utf-8'
+  alert_data = r.data.decode('utf-8-sig').strip("/n").strip()
   #Check if data contains alert data
   try:
-      if r.data != b'':
-          alert = json.loads(r.data.decode('utf-8'))
+      if alert_data != '':
+          alert = json.loads(alert_data)
           if region in alert["data"] or region=="*":
               if alert["id"] not in alerts:
                   alerts.append(alert["id"])
@@ -124,10 +125,10 @@ def monitor():
                   logger.info(str(alert))
       else:
          alarm_off()
-         
   except Exception as ex:
          logger.error(str(ex))
   finally:
      r.release_conn()
+
 if __name__ == '__main__':
    monitor()
