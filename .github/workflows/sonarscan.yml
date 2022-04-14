@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main # or the name of your main branch
+      - master # or the name of your main branch
 jobs:
   build:
     name: Build
