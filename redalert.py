@@ -97,7 +97,7 @@ def alarm_on(data):
     if len(NOTIFIERS)!=0:
         logger.info("Alerting using Notifires")
         apobj.notify(
-            body=str(data["data"]),
+            body='באזורים הבאים: \r\n ' + ', '.join(data["data"]),
             title=str(data["title"]),
             )
 
