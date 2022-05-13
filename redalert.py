@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import threading
-import socket
 import paho.mqtt.client as mqtt
 import urllib3
 import os
@@ -13,7 +12,7 @@ import json
 
 os.environ['PYTHONIOENCODING'] = 'utf-8'
 os.environ['LANG'] = 'C.UTF-8'
-hostname = socket.gethostname()
+
 #mqtt connection Params
 server = os.getenv('MQTT_HOST')
 #Default port is 1883
@@ -32,7 +31,6 @@ logger.info("Monitoring alerts for :" + region)
 http = urllib3.PoolManager()
 _headers = {'Referer':'https://www.oref.org.il/','User-Agent':"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36",'X-Requested-With':'XMLHttpRequest'}
 url= 'https://www.oref.org.il/WarningMessages/alert/alerts.json'
-url_without_scheme= 'https://www.oref.org.il/WarningMessages/alert/alerts.json'
 if debug == 'True':
    url = 'https://techblog.co.il/alerts.json'
 
@@ -69,7 +67,7 @@ alerts = [0]
 apobj = apprise.Apprise()
 
 #Setting up MqttClient
-client = mqtt.Client("redalert_"+hostname)
+client = mqtt.Client("redalert")
 client.username_pw_set(user,passw)
 client.on_connect=on_connect
 client.on_disconnect=on_disconnect
@@ -99,7 +97,7 @@ def alarm_on(data):
     if len(NOTIFIERS)!=0:
         logger.info("Alerting using Notifires")
         apobj.notify(
-            body=str(data["data"]),
+            body='באזורים הבאים: \r\n ' + ', '.join(data["data"]) + '\r\n' + str(data["desc"] ),
             title=str(data["title"]),
             )
 
@@ -113,8 +111,7 @@ def monitor():
   #start the timer
   threading.Timer(1, monitor).start()
   #Check for Alerts
-  r = urllib3.connection_from_url(url)
-  r = http.request('GET',url_without_scheme,headers=_headers,assert_same_host=False)
+  r = http.request('GET',url,headers=_headers)
   r.encoding = 'utf-8'
   alert_data = r.data.decode('utf-8-sig').strip("/n").strip()
   #Check if data contains alert data
@@ -134,5 +131,4 @@ def monitor():
      r.release_conn()
 
 if __name__ == '__main__':
-    logger.info("Red Alert is running")
-    monitor()
+   monitor()
