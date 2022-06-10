@@ -36,6 +36,8 @@ used for setting the MQTT Broker Username, default value is `user`.
 used for setting the MQTT Broker Password, default value is `password`.
 - *DEBUG_MODE*</br>
 used for setting the script to run in test mode wich will read json from test url.
+- *INCLUDE_TEST_ALERTS*</br>
+used to show pikud ha oref tests, default is False.
 - *REGION*</br>
 used for setting the region for monitoring. default is * (any)
 - *NOTIFIERS*</br>
@@ -66,6 +68,7 @@ services:
       - DEBUG_MODE=False
       - REGION=[* for any or region name)
       - NOTIFIERS=[Apprise notifiers]
+      - INCLUDE_TEST_ALERTS=[False|True]
     restart: unless-stopped
 ```
 ### Adding Sensor in Home-Assistant
