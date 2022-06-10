@@ -22,6 +22,8 @@ passw = os.getenv('MQTT_PASS')
 debug = os.getenv('DEBUG_MODE')
 region = os.getenv('REGION')
 NOTIFIERS = os.getenv("NOTIFIERS")
+INCLUDE_TEST_ALERTS = os.getenv("INCLUDE_TEST_ALERTS")
+
 # reader = codecs.getreader('utf-8')
 
 logger.info("Monitoring alerts for :" + region)
@@ -106,6 +108,9 @@ def alarm_off():
     client.publish("/redalert/alarm",'off',qos=0,retain=False)
     client.publish("/redalert","No active alerts",qos=0,retain=False)
 
+def is_test_alert(alert):
+    # if includes, all alerts are treated as not test
+    return INCLUDE_TEST_ALERTS == 'False' and ('בדיקה' in alert['data'] or 'בדיקה מחזורית' in alert['data'])
 
 def monitor():
   #start the timer
@@ -119,7 +124,7 @@ def monitor():
       if alert_data != '':
           alert = json.loads(alert_data)
           if region in alert["data"] or region=="*":
-              if alert["id"] not in alerts:
+              if alert["id"] not in alerts and not is_test_alert(alert):
                   alerts.append(alert["id"])
                   alarm_on(alert)
                   logger.info(str(alert))

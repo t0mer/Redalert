@@ -38,6 +38,8 @@ ENV REGION = "*"
 
 ENV NOTIFIERS = ""
 
+ENV INCLUDE_TEST_ALERTS = "False"
+
 #Create working directory
 RUN mkdir /opt/redalert
 
