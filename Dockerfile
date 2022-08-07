@@ -34,11 +34,13 @@ ENV MQTT_PASS "password"
 #Debug Mode for testing
 ENV DEBUG_MODE "False"
 
-ENV REGION = "*"
+ENV REGION "*"
 
-ENV NOTIFIERS = ""
+ENV NOTIFIERS ""
 
-ENV INCLUDE_TEST_ALERTS = "False"
+ENV INCLUDE_TEST_ALERTS "False"
+
+ENV TOPIC = "/redalert/"
 
 #Create working directory
 RUN mkdir /opt/redalert
