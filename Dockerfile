@@ -40,7 +40,7 @@ ENV NOTIFIERS ""
 
 ENV INCLUDE_TEST_ALERTS "False"
 
-ENV TOPIC = "/redalert/"
+ENV MQTT_TOPIC "/redalert"
 
 #Create working directory
 RUN mkdir /opt/redalert
