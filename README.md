@@ -43,7 +43,8 @@ used for setting the region for monitoring. default is * (any)
 - *NOTIFIERS*</br>
 use apprise notification. you can use multiple notifiers separated by space python for example: </br>
 ```tgram://bottoken/ChatID hassio://user@hostname/accesstoken slack://TokenA/TokenB/TokenC/Channel```
-
+- *MQTT_TOPIC*</br>
+Custom MQTT Topic. default value is `/redalert`
 
 
 ## Usage

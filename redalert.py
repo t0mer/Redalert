@@ -22,6 +22,7 @@ passw = os.getenv('MQTT_PASS')
 debug = os.getenv('DEBUG_MODE')
 region = os.getenv('REGION')
 NOTIFIERS = os.getenv("NOTIFIERS")
+MQTT_TOPIC = os.environ.get("MQTT_TOPIC", "/redalert")
 INCLUDE_TEST_ALERTS = os.getenv("INCLUDE_TEST_ALERTS")
 
 # reader = codecs.getreader('utf-8')
@@ -94,8 +95,8 @@ if len(NOTIFIERS)!=0:
         apobj.add(job)
 
 def alarm_on(data):
-    client.publish("/redalert/data",str(data["data"]),qos=0,retain=False)
-    client.publish("/redalert",'on',qos=0,retain=False)
+    client.publish(MQTT_TOPIC + "/data",str(data["data"]),qos=0,retain=False)
+    client.publish(MQTT_TOPIC,'on',qos=0,retain=False)
     if len(NOTIFIERS)!=0:
         logger.info("Alerting using Notifires")
         apobj.notify(
@@ -105,8 +106,8 @@ def alarm_on(data):
 
 
 def alarm_off():
-    client.publish("/redalert/alarm",'off',qos=0,retain=False)
-    client.publish("/redalert","No active alerts",qos=0,retain=False)
+    client.publish(MQTT_TOPIC + "/alarm",'off',qos=0,retain=False)
+    client.publish(MQTT_TOPIC,"No active alerts",qos=0,retain=False)
 
 def is_test_alert(alert):
     # if includes, all alerts are treated as not test
