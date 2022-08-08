@@ -2,10 +2,10 @@ name: "Create Release"
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: [SonarCloud Scan]
-    types:
-      - completed  
+#  workflow_run:
+#    workflows: [SonarCloud Scan]
+#    types:
+#      - completed  
 
 jobs:
   on-success:
