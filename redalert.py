@@ -23,7 +23,7 @@ user = os.getenv('MQTT_USER')
 passw = os.getenv('MQTT_PASS')
 debug = os.getenv('DEBUG_MODE')
 region = os.getenv('REGION')
-NOTIFIERS = os.getenv('NOTIFIERS', "")
+NOTIFIERS = os.getenv('NOTIFIERS', '')
 MQTT_TOPIC = os.environ.get('MQTT_TOPIC', '/redalert')
 INCLUDE_TEST_ALERTS = os.getenv('INCLUDE_TEST_ALERTS')
 
