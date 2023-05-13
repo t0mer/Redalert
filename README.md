@@ -98,7 +98,7 @@ services:
 ```yaml
   - platform: mqtt
     name: "Red Alert"
-    state_topic: "/redalert/data"
+    state_topic: "/redalert/"
     # unit_of_measurement: '%'
     icon: fas:broadcast-tower
     value_template: "{{ value }}"
