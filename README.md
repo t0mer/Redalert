@@ -94,7 +94,7 @@ services:
     value_template: "{{ value_json.data }}"
     qos: 1
 ```
-#### In some case the above snipet code will not work for you, you can try that:
+#### In some cases, the above snippet code will not work for you; you can try that
 ```yaml
   - platform: mqtt
     name: "Red Alert"
