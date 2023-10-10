@@ -94,6 +94,18 @@ services:
     value_template: "{{ value_json.data }}"
     qos: 1
 ```
+#### In some cases, the above snippet code will not work for you; you can try that
+```yaml
+  - platform: mqtt
+    name: "Red Alert"
+    state_topic: "/redalert/"
+    # unit_of_measurement: '%'
+    icon: fas:broadcast-tower
+    value_template: "{{ value }}"
+    json_attributes_topic: "/redalert/data"
+    json_attributes_template: "{{ value_json | tojson }}"
+    qos: 1
+```
 
 #### Alaram state (Value will be on/off)
 ```yaml
