@@ -13,7 +13,7 @@ RUN pip3 install --upgrade pip setuptools  --no-cache-dir && \
     pip3 install urllib3 --no-cache-dir && \
     pip3 install loguru --no-cache-dir && \
     pip3 install apprise --no-cache-dir && \
-    pip3 install whatsapp-api-client-python --no-cache-dir
+    pip3 install whatsapp-api-client-python==0.0.25 --no-cache-dir
 
 
 ENV PYTHONIOENCODING=utf-8
