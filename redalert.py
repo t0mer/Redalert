@@ -9,7 +9,7 @@ import time
 import codecs
 import apprise
 import json
-from whatsapp_api_client_python import GreenAPI
+from whatsapp_api_client_python import API
 
 os.environ['PYTHONIOENCODING'] = 'utf-8'
 os.environ['LANG'] = 'C.UTF-8'
@@ -74,7 +74,7 @@ client = mqtt.Client("redalert")
 client.username_pw_set(user,passw)
 client.on_connect=on_connect
 client.on_disconnect=on_disconnect
-# client.on_log=on_log # set client logging
+
 client.loop_start()
 logger.info("Connecting to broker")
 mqtt.Client.connected_flag=False#create flag in class
@@ -106,7 +106,7 @@ def alarm_on(data):
             )
     try:
         if GREEN_API_INSTANCE and GREEN_API_TOKEN:
-            greenAPI = GreenAPI(GREEN_API_INSTANCE, GREEN_API_TOKEN)
+            greenAPI = API.GreenAPI(GREEN_API_INSTANCE, GREEN_API_TOKEN)
             greenAPI.sending.sendMessage(WHATSAPP_NUMBER, 'באזורים הבאים: \r\n ' + ', '.join(data["data"]).replace(',','\r\n') + '\r\n' + str(data["desc"] ))
     except Exception as e:
         logger.error(f"Error sending whatsapp message. \n {str(e)}")
