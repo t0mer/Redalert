@@ -64,9 +64,6 @@ def on_disconnect(client, userdata, rc):
     client.connect(server)
 
 
-# def on_log(client, userdata, level, buf):
-#     logger.info(buf)
-
 alerts = [0]
 
 # Setting apprise Job Manager
@@ -77,7 +74,7 @@ client = mqtt.Client("redalert")
 client.username_pw_set(user,passw)
 client.on_connect=on_connect
 client.on_disconnect=on_disconnect
-client.on_log=on_log # set client logging
+# client.on_log=on_log # set client logging
 client.loop_start()
 logger.info("Connecting to broker")
 mqtt.Client.connected_flag=False#create flag in class
