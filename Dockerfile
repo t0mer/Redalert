@@ -12,7 +12,8 @@ RUN pip3 install --upgrade pip setuptools  --no-cache-dir && \
     pip3 install paho-mqtt --no-cache-dir && \
     pip3 install urllib3 --no-cache-dir && \
     pip3 install loguru --no-cache-dir && \
-    pip3 install apprise --no-cache-dir
+    pip3 install apprise --no-cache-dir && \
+    pip3 install whatsapp-api-client-python --no-cache-dir
 
 
 ENV PYTHONIOENCODING=utf-8
@@ -41,6 +42,13 @@ ENV NOTIFIERS ""
 ENV INCLUDE_TEST_ALERTS "False"
 
 ENV MQTT_TOPIC "/redalert"
+
+
+ENV GREEN_API_INSTANCE ""
+ENV GREEN_API_TOKEN ""
+ENV WHATSAPP_NUMBER ""
+
+
 
 #Create working directory
 RUN mkdir /opt/redalert

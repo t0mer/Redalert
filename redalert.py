@@ -9,6 +9,7 @@ import time
 import codecs
 import apprise
 import json
+from whatsapp_api_client_python import API
 
 os.environ['PYTHONIOENCODING'] = 'utf-8'
 os.environ['LANG'] = 'C.UTF-8'
@@ -24,7 +25,9 @@ region = os.getenv('REGION')
 NOTIFIERS = os.getenv("NOTIFIERS")
 MQTT_TOPIC = os.environ.get("MQTT_TOPIC", "/redalert")
 INCLUDE_TEST_ALERTS = os.getenv("INCLUDE_TEST_ALERTS")
-
+GREEN_API_INSTANCE = os.getenv("GREEN_API_INSTANCE")
+GREEN_API_TOKEN = os.getenv("GREEN_API_TOKEN")
+WHATSAPP_NUMBER = os.getenv("WHATSAPP_NUMBER")
 # reader = codecs.getreader('utf-8')
 
 logger.info("Monitoring alerts for :" + region)
@@ -94,6 +97,7 @@ if len(NOTIFIERS)!=0:
         logger.info("Adding: " + job)
         apobj.add(job)
 
+
 def alarm_on(data):
     client.publish(MQTT_TOPIC + "/data",str(data["data"]),qos=0,retain=False)
     client.publish(MQTT_TOPIC,'on',qos=0,retain=False)
@@ -103,6 +107,9 @@ def alarm_on(data):
             body='באזורים הבאים: \r\n ' + ', '.join(data["data"]).replace(',','\r\n') + '\r\n' + str(data["desc"] ),
             title=str(data["title"]),
             )
+    if GREEN_API_INSTANCE and GREEN_API_TOKEN:
+        greenAPI = API.GreenAPI(GREEN_API_INSTANCE, GREEN_API_TOKEN)
+        greenAPI.sending.sendMessage(WHATSAPP_NUMBER, 'באזורים הבאים: \r\n ' + ', '.join(data["data"]).replace(',','\r\n') + '\r\n' + str(data["desc"] ))
 
 
 def alarm_off():
@@ -116,12 +123,11 @@ def is_test_alert(alert):
 def monitor():
   #start the timer
   threading.Timer(1, monitor).start()
-  #Check for Alerts
-  r = http.request('GET',url,headers=_headers)
-  r.encoding = 'utf-8'
-  alert_data = r.data.decode('utf-8-sig').strip("/n").strip()
   #Check if data contains alert data
   try:
+      r = http.request('GET',url,headers=_headers)
+      r.encoding = 'utf-8'
+      alert_data = r.data.decode('utf-8-sig').strip("/n").strip()
       if alert_data != '':
           alert = json.loads(alert_data)
           if region in alert["data"] or region=="*":
