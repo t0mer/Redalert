@@ -107,10 +107,12 @@ def alarm_on(data):
             body='באזורים הבאים: \r\n ' + ', '.join(data["data"]).replace(',','\r\n') + '\r\n' + str(data["desc"] ),
             title=str(data["title"]),
             )
-    if GREEN_API_INSTANCE and GREEN_API_TOKEN:
-        greenAPI = API.GreenAPI(GREEN_API_INSTANCE, GREEN_API_TOKEN)
-        greenAPI.sending.sendMessage(WHATSAPP_NUMBER, 'באזורים הבאים: \r\n ' + ', '.join(data["data"]).replace(',','\r\n') + '\r\n' + str(data["desc"] ))
-
+    try:
+        if GREEN_API_INSTANCE and GREEN_API_TOKEN:
+            greenAPI = API.GreenAPI(GREEN_API_INSTANCE, GREEN_API_TOKEN)
+            greenAPI.sending.sendMessage(WHATSAPP_NUMBER, 'באזורים הבאים: \r\n ' + ', '.join(data["data"]).replace(',','\r\n') + '\r\n' + str(data["desc"] ))
+    except Exception as e:
+        logger.error(f"Error sending whatsapp message. \n {str(e)}")
 
 def alarm_off():
     client.publish(MQTT_TOPIC + "/alarm",'off',qos=0,retain=False)
