@@ -70,6 +70,9 @@ services:
       - REGION=[* for any or region name)
       - NOTIFIERS=[Apprise notifiers]
       - INCLUDE_TEST_ALERTS=[False|True]
+      - GREEN_API_INSTANCE = #GREEN_API_INSTANCE
+      - GREEN_API_TOKEN = #GREEN_API_TOKEN
+      - WHATSAPP_NUMBER = #WHATSAPP_NUMBER
     restart: unless-stopped
 ```
 ### Adding Sensor in Home-Assistant
