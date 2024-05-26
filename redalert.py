@@ -62,7 +62,7 @@ def on_disconnect(client, userdata, rc):
 
 
 def on_log(client, userdata, level, buf):
-    logger.inf(buf)
+    logger.info(buf)
 
 alerts = [0]
 
