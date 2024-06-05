@@ -98,16 +98,19 @@ if len(NOTIFIERS)!=0:
 def alarm_on(data):
     client.publish(MQTT_TOPIC + "/data",str(data["data"]),qos=0,retain=False)
     client.publish(MQTT_TOPIC,'on',qos=0,retain=False)
+    title=str(data["title"])
+    wapp_title = f"*{title}*"
+    body='באזורים הבאים: \r\n ' + ', '.join(data["data"]).replace(',','\r\n') + '\r\n' + str(data["desc"] )
     if len(NOTIFIERS)!=0:
         logger.info("Alerting using Notifires")
         apobj.notify(
-            body='באזורים הבאים: \r\n ' + ', '.join(data["data"]).replace(',','\r\n') + '\r\n' + str(data["desc"] ),
-            title=str(data["title"]),
+            body=body,
+            title=title,
             )
     try:
         if GREEN_API_INSTANCE and GREEN_API_TOKEN:
             greenAPI = API.GreenAPI(GREEN_API_INSTANCE, GREEN_API_TOKEN)
-            greenAPI.sending.sendMessage(WHATSAPP_NUMBER,f"* {str(data["title"])} * \n " + 'באזורים הבאים: \r\n ' + ', '.join(data["data"]).replace(',','\r\n') + '\r\n' + str(data["desc"] ))
+            greenAPI.sending.sendMessage(WHATSAPP_NUMBER,wapp_title + "\r\n" + body)
     except Exception as e:
         logger.error(f"Error sending whatsapp message. \n {str(e)}")
 
