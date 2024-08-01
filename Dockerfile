@@ -12,6 +12,7 @@ RUN pip3 install --upgrade pip setuptools  --no-cache-dir && \
     pip3 install paho-mqtt==1.6.1 --no-cache-dir && \
     pip3 install urllib3 --no-cache-dir && \
     pip3 install loguru --no-cache-dir && \
+    pip3 install requests --no-cache-dir && \
     pip3 install apprise --no-cache-dir && \
     pip3 install whatsapp-api-client-python --no-cache-dir
 
