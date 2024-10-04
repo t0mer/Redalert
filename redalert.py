@@ -132,7 +132,7 @@ def standardize_name(name):
 
 def load_lamas_data():
     file_path = 'lamas.json'
-    github_url = "https://raw.githubusercontent.com/idodov/RedAlert/main/apps/red_alerts_israel/lamas.json"
+    github_url = "https://raw.githubusercontent.com/t0mer/Redalert/refs/heads/master/lamas.json"
 
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
