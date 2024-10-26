@@ -190,24 +190,31 @@ def download_lamas_data(url, file_path):
 
 def categorize_places(data, places):
     categorized_places = {}
-    
+    areas_dict = {area: set(area_places) for area, area_places in data['areas'].items()}
+
     for place in places:
-        for area, area_places in data['areas'].items():
+        found = False
+        for area, area_places in areas_dict.items():
             if place in area_places:
-                if area not in categorized_places:
-                    categorized_places[area] = []
-                categorized_places[area].append(place)
+                categorized_places.setdefault(area, []).append(place)
+                found = True
                 break
+        
+        if not found:
+            categorized_places.setdefault("כללי", []).append(place)
     
     return categorized_places
 
 def format_output(categorized_places):
     result = []
-    for area, places in categorized_places.items():
-        result.append(f"*ישובי {area}*:")
-        for place in places:
-            result.append(place)
+    for area in sorted(categorized_places.keys()):
+        # Sort places a-z in area 
+        sorted_places = sorted(categorized_places[area])
+        # Join the cities/places with commas
+        places_str = "\r\n".join(sorted_places)
+        result.append(f"*ישובי {area}*: {places_str}")
     return "\r\n".join(result)
+
 
 
 def monitor():
@@ -217,9 +224,11 @@ def monitor():
   try:
       r = http.request('GET',url,headers=_headers)
       r.encoding = 'utf-8'
-      alert_data = r.data.decode('utf-8-sig').strip("/n").strip()
-      if alert_data != '':
+      alert_data = r.data.decode('utf-8-sig')
+      alert_data = alert_data.replace('\x00', '').strip()
+      if alert_data and alert_data != '' and not alert_data.isspace():
           alert = json.loads(alert_data)
+          logger.info("Alert data successfully parsed.")
           if region in alert["data"] or region=="*":
               if alert["id"] not in alerts and not is_test_alert(alert):
                   alerts.append(alert["id"])
