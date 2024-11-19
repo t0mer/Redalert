@@ -14,6 +14,7 @@ RUN pip3 install --upgrade pip setuptools  --no-cache-dir && \
     pip3 install loguru --no-cache-dir && \
     pip3 install requests --no-cache-dir && \
     pip3 install apprise --no-cache-dir && \
+    pip3 install websocket-client --no-cache-dir && \
     pip3 install whatsapp-api-client-python --no-cache-dir
 
 
