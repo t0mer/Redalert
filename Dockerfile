@@ -3,9 +3,9 @@ FROM ubuntu:20.04
 LABEL maintainer="tomer.klein@gmail.com"
 
 #install pip3
-RUN apt update && \
-    apt install -yqq python3-pip && \
-    apt clean
+RUN apt update \
+    && apt install -yqq python3-pip \
+    && apt clean
 
 
 
