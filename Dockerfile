@@ -3,9 +3,11 @@ FROM ubuntu:20.04
 LABEL maintainer="tomer.klein@gmail.com"
 
 #install pip3
-RUN apt update && apt install -yqq python3-pip
+RUN apt update && \
+    apt install -yqq python3-pip && \
+    apt clean
 
-RUN apt clean
+
 
 #install python paho-mqtt client and urllib3
 RUN pip3 install --upgrade pip setuptools  --no-cache-dir && \
