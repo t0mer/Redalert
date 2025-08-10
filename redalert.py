@@ -30,7 +30,7 @@ INCLUDE_TEST_ALERTS = os.getenv("INCLUDE_TEST_ALERTS")
 GREEN_API_INSTANCE = os.getenv("GREEN_API_INSTANCE")
 GREEN_API_TOKEN = os.getenv("GREEN_API_TOKEN")
 WHATSAPP_NUMBER = os.getenv("WHATSAPP_NUMBER")
-# reader = codecs.getreader('utf-8')
+
 
 logger.info("Monitoring alerts for :" + region)
 
