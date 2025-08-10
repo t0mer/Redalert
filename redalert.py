@@ -113,8 +113,8 @@ def alarm_on(data):
             )
     try:
         if GREEN_API_INSTANCE and GREEN_API_TOKEN:
-            greenAPI = API.GreenAPI(GREEN_API_INSTANCE, GREEN_API_TOKEN)
-            greenAPI.sending.sendMessage(WHATSAPP_NUMBER,wapp_title + "\r\n" + body)
+            green_api = API.GreenAPI(GREEN_API_INSTANCE, GREEN_API_TOKEN)
+            green_api.sending.sendMessage(WHATSAPP_NUMBER,wapp_title + "\r\n" + body)
     except Exception as e:
         logger.error(f"Error sending whatsapp message. \n {str(e)}")
 
