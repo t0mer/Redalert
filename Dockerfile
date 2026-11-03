@@ -1,13 +1,6 @@
-FROM ubuntu:20.04
+FROM python:3.12-slim
 
 LABEL maintainer="tomer.klein@gmail.com"
-
-#install pip3
-RUN apt update \
-    && apt install -yqq python3-pip \
-    && apt clean
-
-
 
 #install python paho-mqtt client and urllib3
 RUN pip3 install --upgrade pip setuptools  --no-cache-dir && \
@@ -65,4 +58,4 @@ COPY redalert.py /opt/redalert
 #    rm -rf /var/cache/*
 
 
-ENTRYPOINT ["/usr/bin/python3", "/opt/redalert/redalert.py"]
+ENTRYPOINT ["python", "/opt/redalert/redalert.py"]
