@@ -19,7 +19,7 @@ os.environ['LANG'] = 'C.UTF-8'
 #mqtt connection Params
 server = os.getenv('MQTT_HOST')
 #Default port is 1883
-port = int(os.getenv('MQTT_PORT'))
+port = int(os.getenv('MQTT_PORT', '1883'))
 user = os.getenv('MQTT_USER')
 passw = os.getenv('MQTT_PASS')
 debug = os.getenv('DEBUG_MODE')
@@ -71,22 +71,30 @@ alerts = [0]
 # Setting apprise Job Manager
 apobj = apprise.Apprise()
 
-#Setting up MqttClient
-client = mqtt.Client("redalert")
-client.username_pw_set(user,passw)
-client.on_connect=on_connect
-client.on_disconnect=on_disconnect
+#Setting up MqttClient (optional - only when MQTT_HOST is set)
+client = None
+if server:
+    client = mqtt.Client("redalert")
+    client.username_pw_set(user,passw)
+    client.on_connect=on_connect
+    client.on_disconnect=on_disconnect
 
-client.loop_start()
-logger.info("Connecting to broker")
-mqtt.Client.connected_flag=False#create flag in class
-client.connect(server, keepalive=3600)
+    client.loop_start()
+    logger.info("Connecting to broker")
+    mqtt.Client.connected_flag=False#create flag in class
+    client.connect(server, port=port, keepalive=3600)
 
-while not client.connected_flag: #wait in loop
-    logger.info("In wait loop")
-    time.sleep(1)
-logger.info("in Main Loop")
-client.loop_stop()    #Stop loop 
+    while not client.connected_flag: #wait in loop
+        logger.info("In wait loop")
+        time.sleep(1)
+    logger.info("in Main Loop")
+    client.loop_stop()    #Stop loop
+else:
+    logger.info("MQTT_HOST not set, MQTT publishing disabled")
+
+def mqtt_publish(topic, payload):
+    if client is not None:
+        client.publish(topic, payload, qos=0, retain=False)
 
 
 if len(NOTIFIERS)!=0:
@@ -98,8 +106,8 @@ if len(NOTIFIERS)!=0:
 
 
 def alarm_on(data):
-    client.publish(MQTT_TOPIC + "/data",str(data["data"]),qos=0,retain=False)
-    client.publish(MQTT_TOPIC,'on',qos=0,retain=False)
+    mqtt_publish(MQTT_TOPIC + "/data",str(data["data"]))
+    mqtt_publish(MQTT_TOPIC,'on')
     title=str(data["title"])
     wapp_title = f"*{title}*"
     categorized_places = categorize_places(lamas, data["data"])
@@ -119,8 +127,8 @@ def alarm_on(data):
         logger.error(f"Error sending whatsapp message. \n {str(e)}")
 
 def alarm_off():
-    client.publish(MQTT_TOPIC + "/alarm",'off',qos=0,retain=False)
-    client.publish(MQTT_TOPIC,"No active alerts",qos=0,retain=False)
+    mqtt_publish(MQTT_TOPIC + "/alarm",'off')
+    mqtt_publish(MQTT_TOPIC,"No active alerts")
 
 def is_test_alert(alert):
     # if includes, all alerts are treated as not test
