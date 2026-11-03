@@ -37,8 +37,8 @@ logger.info("Monitoring alerts for :" + region)
 
 #Setting Request Headers
 http = urllib3.PoolManager()
-_headers = {'Referer':'https://www.oref.org.il/','User-Agent':"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36",'X-Requested-With':'XMLHttpRequest'}
-url= 'https://www.oref.org.il/WarningMessages/alert/alerts.json'
+_headers = {'Referer':'https://www.oref.org.il/heb','Accept':'application/json, text/plain, */*','User-Agent':"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36",'X-Requested-With':'XMLHttpRequest'}
+url= 'https://www.oref.org.il/warningMessages/alert/Alerts.json'
 if debug == 'True':
    url = 'http://localhost/alerts.json'
 
